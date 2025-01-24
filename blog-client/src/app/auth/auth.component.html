@@ -1,0 +1,15 @@
+<div class="wrapper">
+  <div class="logo">
+    <h1 id="logo">BlogApp</h1>
+  </div>
+
+  <div class="line"></div>
+
+  @if (createAccount) {
+    <app-registration (createAccount)="toggleCreateAccount($event)"></app-registration>
+  }
+
+  @if (!createAccount) {
+    <app-login (createAccount)="toggleCreateAccount($event)"></app-login>
+  }
+</div>

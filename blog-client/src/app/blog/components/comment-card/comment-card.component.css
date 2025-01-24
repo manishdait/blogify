@@ -1,0 +1,21 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: .5em;
+  background-color: #ECF4FA;
+  border-radius: .4em;
+  padding: 1em;
+}
+
+.metadata {
+  display: flex;
+  flex-direction: column;
+  gap: .1em;
+}
+.metadata #user {
+  font-size: .9rem;
+}
+.metadata #date {
+  font-size: .9em;
+  color: #7c7c7c;
+}

@@ -1,0 +1,33 @@
+<div class="wrapper">
+  <h1 id="title">{{ blog.title }}</h1>
+
+  <div class="author">
+    <span id="author">{{ blog.author }}</span>
+    <span id="date">Published on <span>{{ blog.createdAt }}</span></span>
+  </div>
+
+  <div class="metadata">
+    <span><fa-icon [icon]="commentIcon"></fa-icon><span id="data">{{ ' ' + comments.length }}</span></span>
+  </div>
+  
+  <div id="content" [innerHTML]="blog.content"></div>
+  
+  <!--  -->
+
+  <div class="comment-wrapper">
+    <h1>Comments</h1>
+
+    <div class="input-group">
+      <input #comment type="text" placeholder="Enter your thoughts...">
+      <button (click)="addComment(comment.value)">Comment</button>
+    </div>
+
+    <br>
+
+    <div class="comment-holder">
+      @for (comment of comments; track comment.id) {
+        <app-comment [comment]="comment"></app-comment>
+      }
+    </div>
+  </div>
+</div>

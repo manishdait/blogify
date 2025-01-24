@@ -1,0 +1,50 @@
+.wrapper {
+  width: min(100%, 1100px);
+  height: 100vh;
+  margin: 0 auto;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: .1em solid #ddd;
+  padding: 1em;
+}
+
+#logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: #2C3E50;
+}
+
+.navbar-group {
+  display: flex;
+  align-items: center;
+  gap: .5em;
+}
+
+.navbar-group a {
+  font-size: 1rem;
+  color: #a7a7a7;
+  text-decoration: none;
+  padding: .4em .8em;
+  border-radius: 1em;
+}
+
+.navbar-group a:first-child:hover {
+  color: #2C3E50;
+}
+
+.navbar-group a:last-child {
+  background-color: #2C3E50;
+  color: #fff;
+}
+
+.navbar-group a:last-child:hover {
+  background-color: #425D73;
+}
+
+.router-wrapper {
+  padding: 1em;
+}

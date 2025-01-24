@@ -1,0 +1,70 @@
+.container{
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  width: 100%;
+}
+
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: .2em;
+}
+.input-group label {
+  font-size: .9rem;
+  color: #2C3E50;
+}
+
+.input-group input {
+  width: 100%;
+  font-size: 1rem;
+  outline: transparent;
+  border: .1em solid #ddd;
+  border-radius: .2em;
+  padding: .5em;
+}
+
+.input-group input:focus {
+  border-color: #2C3E50;
+}
+
+.btn-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .8em;
+}
+
+.btn-group button {
+  width: 150px;
+  font-size: 1rem;
+  cursor: pointer;
+  outline: transparent;
+  border: .1em solid #2C3E50;;
+  border-radius: .3em;
+  padding: .5em 1em;
+}
+
+.btn-group button:first-child {
+  background-color: #2C3E50;
+  color: #fff;
+}
+
+.btn-group button:first-child:hover {
+  background-color: #425D73;
+}
+
+.btn-group button:last-child {
+  background-color: #fff;
+  color: #2C3E50;
+}
+
+.btn-group button:last-child:hover {
+  background-color: #eeeeee;
+}
+
+@media screen and (max-width: 350px) {
+  .btn-group button {
+    width: 100%;
+  }
+}

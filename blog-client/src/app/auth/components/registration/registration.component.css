@@ -1,0 +1,70 @@
+.wrapper, .form-wrapper {
+  width: 100%;
+}
+
+.wrapper p, .form-wrapper p {
+  font-size: 1rem;
+  color: #a7a7a7;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: .2em;
+  color: #2C3E50;
+  margin: 1em 0;
+}
+.input-group label {
+  font-size: .9rem;
+}
+.input-group input {
+  font-size: 1rem;
+  outline: none;
+  border: .1em solid #ddd;
+  border-radius: .2em;
+  padding: .4em .5em;
+  
+}
+.input-group input:focus {
+  border-color: #2C3E50;
+}
+
+.btn-group {
+  display: flex;
+  flex-direction: column;
+  gap: .8em;
+}
+
+.btn-group button {
+  font-size: 1rem;
+  padding: .5em 1em;
+  outline: transparent;
+  border: none;
+  border-radius: .2em;
+  cursor: pointer;
+  border: .1em solid #2C3E50;
+}
+
+.btn-group button:first-child {
+  background-color: #2C3E50;
+  color: #fff;
+}
+
+.btn-group button:first-child:hover {
+  background-color: #425D73;
+  border-color: #425D73;
+}
+
+.btn-group button:last-child {
+  background-color: transparent;
+  color: #2C3E50;
+}
+
+.btn-group button:last-child:hover {
+  background-color: #eeeeee;
+}
+
+.error {
+  font-size: .9rem;
+  color: #ff0000;
+}

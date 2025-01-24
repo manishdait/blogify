@@ -1,0 +1,17 @@
+.wrapper {
+  position: fixed;
+  width: 100%;
+  display: flex;
+  top: 5%;
+}
+
+.alert {
+  width: min(100%, 500px);
+  background-color: #ECF4FA;
+  border-radius: .4em;
+  padding: .5em 1em;
+  margin: auto;
+}
+.alert span {
+  font-size: 1rem;
+}

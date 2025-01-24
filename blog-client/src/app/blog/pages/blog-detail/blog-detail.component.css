@@ -1,0 +1,99 @@
+fa-icon {
+  font-size: .8rem;
+  color: #2C3E50;
+}
+
+.wrapper {
+  width: 100%
+}
+
+#title {
+  font-size: 2rem;
+  margin-bottom: .4em;
+  color: #2C3E50;
+}
+
+.author {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: .2em;
+  margin-bottom: .5em;
+}
+
+.author #author {
+  font-size: 1rem;
+  color: #2C3E50;
+}
+.author #date{
+  font-size: 1rem;
+  color: #7C7C7C;
+}
+.author #date span{
+  color: #2C3E50;
+}
+
+.metadata {
+  display: flex;
+  gap: 1em;
+  border-top: .1em solid #e0e0e0;
+  border-bottom: .1em solid #e0e0e0;
+  padding: .5em;
+  margin-bottom: .5em;
+}
+.metadata #data {
+  font-size: .9rem;
+}
+
+#content {
+  margin: 1em 0;
+}
+
+/*  */
+
+.comment-wrapper {
+  border-top: .1em solid #e0e0e0;
+  padding: 1em 0;
+}
+.comment-wrapper h1 {
+  font-size: 1.5rem;
+  font-weight: normal;
+  color: #2C3E50;
+}
+
+.input-group {
+  padding: .8em 0;
+  display: flex;
+  gap: .5em;
+}
+.input-group input {
+  flex-grow: 1;
+  font-size: 1rem;
+  outline: none;
+  border: .1em solid #ddd;
+  border-radius: .2em;
+  padding: .5em;
+}
+.input-group input:focus {
+  border-color: #2C3E50;
+}
+.input-group button {
+  background-color: #2C3E50;
+  color: #fff;
+  outline: transparent;
+  border: none;
+  border-radius: .2em;
+  padding: .5em;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.input-group button:hover {
+  background-color: #425D73;
+}
+
+.comment-holder {
+  display: flex;
+  flex-direction: column;
+  gap: .5em;
+}

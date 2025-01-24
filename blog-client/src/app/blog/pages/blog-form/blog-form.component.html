@@ -1,0 +1,16 @@
+<div class="container">
+    <div class="input-group">
+      <label for="title">Title</label>
+      <input type="text" id="title" placeholder="Title for your story" #title>
+    </div>
+
+    <div class="input-group">
+      <label>Content</label>
+      <mini-editor [foucusOutlineColor]="'#2C3E50'" #editor></mini-editor>
+    </div>
+    
+    <div class="btn-group">
+      <button type="button" (click)="publish()">Publish</button>
+      <button type="button">Cancle</button>
+    </div>
+</div>
