@@ -21,6 +21,9 @@ export class BlogFormComponent {
       content: this.editor.content
     }
 
+    this.title.nativeElement.value = '';
+    this.editor.reset();
+    
     this.blogService.createBlog(request).subscribe(
       (res) => {
         console.log(res);
