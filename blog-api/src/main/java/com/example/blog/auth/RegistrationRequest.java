@@ -1,5 +1,27 @@
 package com.example.blog.auth;
 
-public record RegistrationRequest(String firstName, String lastName, String email, String password) {
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+
+public record RegistrationRequest(
+  @NotBlank
+  @Schema(description = "First name of user")
+  String firstName, 
+
+  @NotBlank
+  @Schema(description = "Last name of user")
+  String lastName, 
+
+  @Email
+  @Schema(description = "Email address of user")
+  String email, 
+
+  @NotBlank
+  @Size(min = 8, max = 20)
+  @Schema(description = "Password for user of min 8 character")
+  String password
+) {
   
 }

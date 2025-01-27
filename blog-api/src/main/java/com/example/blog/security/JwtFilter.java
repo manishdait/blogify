@@ -31,7 +31,7 @@ public class JwtFilter extends OncePerRequestFilter {
   @Override
   protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
     String path = request.getServletPath();
-    return path.startsWith("/blog-api/v1/auth/") 
+    return path.startsWith("/blog-api/v1/auth/")
      || (request.getMethod().equals("GET") && path.equals("/blog-api/v1/blog"));
   }
 

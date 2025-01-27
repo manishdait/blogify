@@ -44,6 +44,20 @@ public class SecurityConfig {
     http.authorizeHttpRequests(
       request -> {
         request.requestMatchers("/error", "/favicon.ico").permitAll();
+        request.requestMatchers(
+          "/v2/api-docs", 
+          "/v3/api-docs", 
+          "/v3/api-docs.yaml", 
+          "/v3/api-docs/**", 
+          "/swagger-resources", 
+          "/swagger-resources/**",
+          "/configuration/ui",
+          "/configuration/security",
+          "/webjars/**",
+          "/swagger-ui/**", 
+          "/swagger-ui.html", 
+          "/docs"
+        ).permitAll();
         request.requestMatchers("/blog-api/v1/auth/**").permitAll();
         request.requestMatchers(HttpMethod.GET, "/blog-api/v1/blog/**").permitAll();
         request.anyRequest().authenticated();
