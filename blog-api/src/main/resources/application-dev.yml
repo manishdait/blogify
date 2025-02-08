@@ -8,16 +8,18 @@ spring:
     hibernate:
       ddl-auto: create-drop
     database: postgresql
-    show-sql: true
   mail:
     host: localhost
     port: 1025
+    username: springboot@blogapi.com
     protocol: smtp
 
 springdoc:
   swagger-ui:
     path: /docs
     
-jwt:
-  secret-key: 815F1298534CA2989B84C1C2F48D4609E7A05811E0700653661466A6
-  expiration-time: 60
+security:
+  jwt:
+    secret-key: 815F1298534CA2989B84C1C2F48D4609E7A05811E0700653661466A6
+    expiration: 60000
+

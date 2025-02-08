@@ -7,8 +7,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-import com.example.blog.user.role.Role;
-import com.example.blog.user.role.RoleRepository;
+import com.example.blog.user.domain.role.Role;
+import com.example.blog.user.domain.role.RoleRepository;
 
 @SpringBootApplication
 @EnableAsync

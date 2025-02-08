@@ -19,13 +19,12 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import com.example.blog.security.JwtFilter;
-
 import static org.springframework.security.config.Customizer.withDefaults;
 
 import java.util.List;
 
 import com.example.blog.user.UserService;
+import com.example.blog.util.security.JwtFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -40,6 +39,11 @@ public class SecurityConfig {
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(csrf -> csrf.disable());
     http.cors(withDefaults());
+
+    http.sessionManagement(
+      session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+    );
+    http.authenticationProvider(authenticationProvider());
 
     http.authorizeHttpRequests(
       request -> {
@@ -59,15 +63,10 @@ public class SecurityConfig {
           "/docs"
         ).permitAll();
         request.requestMatchers("/blog-api/v1/auth/**").permitAll();
-        request.requestMatchers(HttpMethod.GET, "/blog-api/v1/blog/**").permitAll();
+        request.requestMatchers(HttpMethod.GET, "/blog-api/v1/blog/**", "/blog-api/v1/image/**").permitAll();
         request.anyRequest().authenticated();
       }
-    );
-    http.sessionManagement(
-      session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-    );
-    http.authenticationProvider(authenticationProvider());
-    http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+    ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }
 

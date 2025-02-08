@@ -1,8 +1,8 @@
 package com.example.blog.comment;
 
 import com.example.blog.blog.Blog;
+import com.example.blog.shared.AbstractAuditingEntity;
 import com.example.blog.user.User;
-import com.example.blog.util.AbsractAuditingEntity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
@@ -27,7 +27,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Entity
 @Table(name = "comment")
-public class Comment extends AbsractAuditingEntity {
+public class Comment extends AbstractAuditingEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "comment_sequence_generator")
   @SequenceGenerator(name = "comment_sequence_generator", sequenceName = "comment_sequence", initialValue = 101, allocationSize = 1)

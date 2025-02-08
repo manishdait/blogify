@@ -1,10 +1,12 @@
 package com.example.blog.comment;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.example.blog.blog.Blog;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
-  List<Comment> findByBlog(Blog blog);
+  @Query("select c from Comment c where c.blog.id = :blogId")
+  Page<Comment> findByBlog(@Param("blogId") Integer blogId, Pageable pageable);
 }

@@ -3,8 +3,8 @@ package com.example.blog.blog;
 import java.util.List;
 
 import com.example.blog.comment.Comment;
+import com.example.blog.shared.AbstractAuditingEntity;
 import com.example.blog.user.User;
-import com.example.blog.util.AbsractAuditingEntity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,7 +12,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
@@ -30,7 +29,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @Entity
 @Table(name = "blog")
-public class Blog extends AbsractAuditingEntity {
+public class Blog extends AbstractAuditingEntity {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "blog_sequence_generator")
   @SequenceGenerator(name = "blog_sequence_generator", sequenceName = "blog_sequence", initialValue = 101, allocationSize = 1)
@@ -40,8 +39,7 @@ public class Blog extends AbsractAuditingEntity {
   @Column(name = "title")
   private String title;
 
-  @Lob
-  @Column(name = "content")
+  @Column(name = "content", columnDefinition = "TEXT")
   private String content;
 
   @ManyToOne

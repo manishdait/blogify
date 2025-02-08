@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.blog.auth.dto.AuthRequest;
+import com.example.blog.auth.dto.AuthResponse;
+import com.example.blog.auth.dto.RegistrationRequest;
+
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,13 +30,13 @@ public class AuthController {
   @Operation(summary = "Register a new user")
   @PostMapping("/sign-up")
   public ResponseEntity<AuthResponse> registerUser(@RequestBody RegistrationRequest request) {
-    return ResponseEntity.status(HttpStatus.CREATED).body(authService.registerUser(request));
+    return ResponseEntity.status(HttpStatus.CREATED).body(authService.register(request));
   }
 
   @Operation(summary = "Authenticate the user")
   @PostMapping("/login")
   public ResponseEntity<AuthResponse> authenticateUser(@RequestBody AuthRequest request) {
-    return ResponseEntity.status(HttpStatus.OK).body(authService.authenticateUser(request));
+    return ResponseEntity.status(HttpStatus.OK).body(authService.authenticate(request));
   }
 
   @Operation(summary = "Verify email address of user")

@@ -7,3 +7,6 @@ spring:
   
 server:
   port: 8080
+
+app:
+  asset-path: "src/main/resources/static/asset"

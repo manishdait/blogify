@@ -1,5 +1,6 @@
 package com.example.blog.user;
 
+import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
 
@@ -7,8 +8,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.example.blog.user.role.Role;
-import com.example.blog.util.AbsractAuditingEntity;
+import com.example.blog.shared.AbstractAuditingEntity;
+import com.example.blog.user.domain.role.Role;
+import com.example.blog.util.image.Image;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -19,12 +22,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 @AllArgsConstructor
@@ -33,8 +38,9 @@ import lombok.experimental.SuperBuilder;
 @Setter
 @SuperBuilder
 @Entity
+@ToString
 @Table(name = "blog_user")
-public class User extends AbsractAuditingEntity implements UserDetails {
+public class User extends AbstractAuditingEntity implements UserDetails, Principal {
   @Id
   @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_sequence_generator")
   @SequenceGenerator(name = "user_sequence_generator", sequenceName = "user_sequence", allocationSize = 1)
@@ -42,9 +48,11 @@ public class User extends AbsractAuditingEntity implements UserDetails {
   private Integer id;
 
   @Column(name = "first_name")
+  @JsonProperty("first_name")
   private String firstName;
 
   @Column(name = "last_name")
+  @JsonProperty("last_name")
   private String lastName;
 
   @Column(name= "email", unique = true)
@@ -56,10 +64,12 @@ public class User extends AbsractAuditingEntity implements UserDetails {
   @Column(name = "verified")
   private boolean verified;
 
+  @OneToOne
+  @JoinColumn(name = "image_id")
+  private Image image;
+
   @ManyToMany(fetch = FetchType.EAGER)
-  @JoinTable(name = "user_role", 
-    joinColumns = {@JoinColumn(name = "role_id")},
-    inverseJoinColumns = {@JoinColumn(name = "user_id")})
+  @JoinTable(name = "user_role", joinColumns = {@JoinColumn(name = "role_id")}, inverseJoinColumns = {@JoinColumn(name = "user_id")})
   private List<Role> roles;
 
   @Override
@@ -76,5 +86,10 @@ public class User extends AbsractAuditingEntity implements UserDetails {
 
   public String getFullname() {
     return firstName + " " + lastName;
+  }
+
+  @Override
+  public String getName() {
+    return this.email;
   }
 }

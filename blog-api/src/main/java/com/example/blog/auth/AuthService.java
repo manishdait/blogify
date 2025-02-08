@@ -10,28 +10,33 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.blog.exception.BlogApiException;
-import com.example.blog.exception.ForbiddenException;
-import com.example.blog.mail.MailService;
-import com.example.blog.security.JwtService;
-import com.example.blog.user.User;
+import com.example.blog.auth.dto.AuthRequest;
+import com.example.blog.auth.dto.AuthResponse;
+import com.example.blog.auth.dto.RegistrationRequest;
+import com.example.blog.handler.exception.TokenException;
 import com.example.blog.user.UserRepository;
-import com.example.blog.user.UserService;
-import com.example.blog.user.role.Role;
-import com.example.blog.user.role.RoleRepository;
-import com.example.blog.user.token.Token;
-import com.example.blog.user.token.TokenRepository;
+import com.example.blog.user.User;
+import com.example.blog.user.domain.role.Role;
+import com.example.blog.user.domain.role.RoleRepository;
+import com.example.blog.user.domain.token.Token;
+import com.example.blog.user.domain.token.TokenRepository;
+import com.example.blog.util.mail.Mail;
+import com.example.blog.util.mail.MailContextBuilder;
+import com.example.blog.util.mail.MailService;
+import com.example.blog.util.security.JwtService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthService {
   private final RoleRepository roleRepository;
   private final UserRepository userRepository;
@@ -40,16 +45,21 @@ public class AuthService {
   private final PasswordEncoder passwordEncoder;
   private final AuthenticationManager authenticationManager;
 
-  private final UserService userService;
   private final MailService mailService;
+  private final MailContextBuilder mailContextBuilder;
   private final JwtService jwtService;
 
-  public AuthResponse registerUser(RegistrationRequest request) {
+  @Transactional
+  public AuthResponse register(RegistrationRequest request) {
     userRepository.findByEmail(request.email()).ifPresent((u) -> {
-      throw new BlogApiException(String.format("User with email:`%s` already present", u.getEmail()));
+      log.error("User with email:`{}` already present", u.getEmail());
+      throw new IllegalArgumentException(String.format("User with email:`%s` already present", u.getEmail()));
     });
 
-    Role role = roleRepository.findByRole("Role_USER").orElseThrow();
+    Role role = roleRepository.findByRole("Role_USER").orElseThrow(() -> {
+      log.error("Required role `{}` not exist", "Role_USER");
+      throw new IllegalStateException("Required role not exist");
+    });
 
     User user = User.builder()
       .firstName(request.firstName())
@@ -63,50 +73,54 @@ public class AuthService {
     userRepository.save(user);
 
     String accessToken = jwtService.generateToken(
-      user.getUsername(), Map.of("fullName" , user.getFullname())
+      user.getUsername(), Map.of("full_name" , user.getFullname())
     );
     String refreshToken = generateRefreshToken(
-      user.getUsername(), Map.of("fullName", user.getFullname())
+      user.getUsername(), Map.of("full_name", user.getFullname())
     );
 
     String token = generateToken(user);
-    mailService.sendEmailVerificationMail(user, token);
+    Mail mail = mailContextBuilder.buildEmailVerificationMail(user, token);
+    mailService.sendMail(mail);
 
+    log.info("User register to system with username:`{}`", user.getUsername());
     return new AuthResponse(user.getUsername(), accessToken, refreshToken);
   }
 
-  public AuthResponse authenticateUser(AuthRequest request) {
-    Authentication authentication = authenticationManager.authenticate(
-      new UsernamePasswordAuthenticationToken(
-        request.email(), 
-        request.password()
-      )
-    );
+  public AuthResponse authenticate(AuthRequest request) {
+    Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+      request.email(), 
+      request.password()
+    ));
 
     User user = (User) authentication.getPrincipal();
 
     String accessToken = jwtService.generateToken(
-      user.getUsername(), Map.of("fullName", user.getFullname())
+      user.getUsername(), Map.of("full_name", user.getFullname())
     );
     String refreshToken = generateRefreshToken(
-      user.getUsername(), Map.of("fullName", user.getFullname())
+      user.getUsername(), Map.of("full_name", user.getFullname())
     );
 
     return new AuthResponse(user.getUsername(), accessToken, refreshToken);
   }
 
-  public void verifyAccount(String username, String code) {
-    Token token = tokenRepository.findByCode(code).orElseThrow(
-      () -> new ForbiddenException("Invalid token") 
-    );
+  @Transactional
+  public void verifyAccount(String username, String _token) {
+    Token token = tokenRepository.findByToken(_token).orElseThrow(() -> {
+      log.error("Invalid token during email verification");
+      throw new TokenException("Invalid token");
+    });
 
     if (token.getExpiration().isBefore(Instant.now())) {
-      throw new ForbiddenException("Token is expired");
+      log.error("Expired token during email verification");
+      throw new TokenException("Token is expired");
     }
 
     User user = token.getUser();
-    if (!user.getUsername().equals(username)) {
-      return;
+    if (!user.getUsername().equals(username) && token.isVerified()) {
+      log.error("Invalid token during email verification");
+      throw new TokenException("Invalid token");
     }
 
     user.setVerified(true);
@@ -114,14 +128,16 @@ public class AuthService {
     
     token.setVerified(true);
     tokenRepository.save(token);
+    log.info("User email verified:`{}`", username);
   }
 
+  @Transactional
   public void resendVerificationToken(String username) {
-    User user = userRepository.findByEmail(username).orElseThrow(
-      () -> new BlogApiException("Invalid username")
-    );
+    User user = userRepository.findByEmail(username).orElseThrow(() -> {
+      throw new IllegalArgumentException("Invalid username");
+    });
     if (user.isVerified()) {
-      throw new ForbiddenException("User already verified");
+      throw new TokenException("User already verified");
     }
 
     Optional<Token> _token = tokenRepository.findByUser(user).stream()
@@ -130,46 +146,45 @@ public class AuthService {
 
     if (_token.isEmpty()) {
       String code = generateToken(user);
-      mailService.sendEmailVerificationMail(user, code);
+      Mail mail = mailContextBuilder.buildEmailVerificationMail(user, code);
+      mailService.sendMail(mail);;
       return;
     }
 
+    String code;
+    do {
+      code = generateToken();
+    } while (tokenRepository.findByToken(code).isPresent());
+
     Token token = _token.get();
     token.setExpiration(Instant.now().plusSeconds(3600));
+    token.setToken(code);
     tokenRepository.save(token);
 
-    mailService.sendEmailVerificationMail(user, token.getCode());
-  }
-
-  public Optional<User> getCurrentUser() {
-    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-    if (authentication.getPrincipal() instanceof String) {
-      return Optional.empty();
-    }
-
-    User user = (User) authentication.getPrincipal();
-    return Optional.of(user);
+    Mail mail = mailContextBuilder.buildEmailVerificationMail(user, token.getToken());
+    mailService.sendMail(mail);
   }
 
   public AuthResponse refreshToken(HttpServletRequest request) {
     String token = request.getHeader(HttpHeaders.AUTHORIZATION);
 
     if (token == null || !token.startsWith("Bearer ")) {
-      throw new ForbiddenException("Unauthorize request");
+      throw new TokenException("Unauthorize request");
     }
     
-    
     token = token.substring(7);
-    String username = jwtService.getUsername(token);
+    String username = jwtService.username(token);
 
-    UserDetails userDetails = userService.loadUserByUsername(username);
+    UserDetails userDetails = userRepository.findByEmail(username).orElseThrow(
+      () -> new TokenException("Invalid Token")
+    );
 
-    if(!jwtService.isValidToken(userDetails, token)) {
-      new ForbiddenException("Invalid token");
+    if(!jwtService.validToken(userDetails, token)) {
+      new TokenException("Invalid token");
     }
 
     String accessToken = jwtService.generateToken(
-      username, Map.of("fullName", jwtService.getFullname(token))
+      username, Map.of("full_name", jwtService.fullname(token))
     );
     return new AuthResponse(username, accessToken, token);
   }
@@ -179,6 +194,23 @@ public class AuthService {
   }
 
   private String generateToken(User user) {
+    String _token;
+    do {
+      _token = generateToken();
+    } while (tokenRepository.findByToken(_token).isPresent());
+
+    Token token = Token.builder()
+      .token(_token)
+      .user(user)
+      .expiration(Instant.now().plusSeconds(3600))
+      .verified(false)
+      .build();
+    
+    tokenRepository.save(token);
+    return token.getToken();
+  }
+
+  private String generateToken() {
     String character = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
     SecureRandom random = new SecureRandom();
@@ -189,14 +221,6 @@ public class AuthService {
       code.append(character.charAt(index));
     }
 
-    Token token = Token.builder()
-      .code(code.toString())
-      .user(user)
-      .expiration(Instant.now().plusSeconds(3600))
-      .verified(false)
-      .build();
-    
-    tokenRepository.save(token);
-    return token.getCode();
+    return code.toString();
   }
 }

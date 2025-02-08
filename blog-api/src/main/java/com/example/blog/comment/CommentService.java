@@ -1,82 +1,85 @@
 package com.example.blog.comment;
 
-import java.util.List;
-import java.util.Optional;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
-import com.example.blog.auth.AuthService;
 import com.example.blog.blog.Blog;
 import com.example.blog.blog.BlogRepository;
-import com.example.blog.exception.ForbiddenException;
+import com.example.blog.comment.dto.CommentRequest;
+import com.example.blog.comment.dto.CommentResponse;
+import com.example.blog.comment.mapper.CommentMapper;
+import com.example.blog.handler.exception.UnauthorizeAccessException;
+import com.example.blog.shared.PagedResponse;
 import com.example.blog.user.User;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
 public class CommentService {
   private final CommentRepository commentRepository;
+  private final CommentMapper commentMapper;
+
   private final BlogRepository blogRepository;
 
-  private final AuthService authService;
+  public CommentResponse createComment(CommentRequest request, Authentication authentication) {
+    User user = (User) authentication.getPrincipal();
 
-  public CommentResponse createComment(CommentRequest request) {
-    Optional<User> _user = authService.getCurrentUser();
-    if (!_user.isPresent() || !_user.get().isVerified()) {
-      throw new ForbiddenException("Operation is forbidden");
+    if (!user.isVerified()) {
+      throw new IllegalStateException("User account is not verified");
     }
 
     Blog blog = blogRepository.findById(request.blogId()).orElseThrow(
-      () -> new IllegalArgumentException("Blog does not found")
+      () -> new EntityNotFoundException("Blog does not found")
     );
 
     Comment comment = Comment.builder()
       .message(request.message())
-      .author(_user.get())
+      .author(user)
       .blog(blog)
       .build();
     commentRepository.save(comment);
 
-    return new CommentResponse(comment.getId(), comment.getMessage(), comment.getAuthor().getFullname(), comment.getCreatedAt());
+    return commentMapper.commentToCommentResponse(comment, user);
   }
 
-  public List<CommentResponse> getCommentForBlog(Integer blogId) {
-    Blog blog = blogRepository.findById(blogId) .orElseThrow(
-      () -> new IllegalArgumentException("Blog does not found")
-    );
+  public PagedResponse<CommentResponse> getCommentForBlog(Integer blogId, Authentication authentication, int number, int size) {
+    User user = (User) authentication.getPrincipal();
 
-    return commentRepository.findByBlog(blog).stream()
-      .map(
-        comment -> new CommentResponse(comment.getId(), comment.getMessage(), comment.getAuthor().getFullname(), comment.getCreatedAt())
-      )
-      .toList();
+    Pageable pageable = PageRequest.of(number, size);
+    Page<Comment> commentPage = commentRepository.findByBlog(blogId, pageable);
+
+    return commentMapper.pageToPagedResponse(commentPage, user);
   }
 
-  public CommentResponse updateComment(Integer id, CommentRequest request) {
+  public CommentResponse updateComment(Integer id, CommentRequest request, Authentication authentication) {
     Comment comment = commentRepository.findById(id).orElseThrow(
-      () -> new IllegalArgumentException("Comment not found")
+      () -> new EntityNotFoundException("Comment not found")
     );
 
-    Optional<User> _user = authService.getCurrentUser();
-    if (!_user.isPresent() || !_user.get().isVerified() || !_user.get().getUsername().equals(comment.getAuthor().getUsername())) {
-      throw new ForbiddenException("Operation is forbidden");
+    User user = (User) authentication.getPrincipal();
+    if (!user.getUsername().equals(comment.getAuthor().getUsername())) {
+      throw new UnauthorizeAccessException("Operation is forbidden");
     }
 
-    comment.setMessage(comment.getMessage());
+    comment.setMessage(request.message());
     commentRepository.save(comment);
 
-    return new CommentResponse(comment.getId(), comment.getMessage(), comment.getAuthor().getFullname(), comment.getCreatedAt());
+    return commentMapper.commentToCommentResponse(comment, user);
   }
 
-  public void deleteComment(Integer id) {
+  public void deleteComment(Integer id, Authentication authentication) {
     Comment comment = commentRepository.findById(id).orElseThrow(
-      () -> new IllegalArgumentException("Comment not found")
+      () -> new EntityNotFoundException("Comment not found")
     );
 
-    Optional<User> _user = authService.getCurrentUser();
-    if (!_user.isPresent() || !_user.get().isVerified() || !_user.get().getUsername().equals(comment.getAuthor().getUsername())) {
-      throw new ForbiddenException("Operation is forbidden");
+    User user = (User) authentication.getPrincipal();
+    if (!user.getUsername().equals(comment.getAuthor().getUsername())) {
+      throw new UnauthorizeAccessException("Operation is forbidden");
     }
 
     commentRepository.delete(comment);
