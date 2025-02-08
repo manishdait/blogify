@@ -1,0 +1,22 @@
+<div class="flex flex-col border-[.1em] border-lime-300 p-4 rounded-lg gap-4" [style.background-color]="comment.is_owned? '#ecfcca':'#fff'">
+  <div class="flex flex-col gap-0.5">
+    <span class="text-sm text-black font-semibold flex gap-2 items-center">
+      <div class="w-8 h-8 overflow-hidden rounded-[100%] border-[.1em] border-gray-200">
+        <img class="w-full h-full object-cover" [src]="comment.author_img?'http://localhost:8080/blog-api/v1/image/'+comment.author_img:'asset/profile.jpg'">
+      </div>
+
+      {{ comment.author }}
+    </span>
+    <span class="text-sm text-gray-700">{{ '✨ ' + comment.created_at }}</span>
+  </div>
+          
+  <p class="text-base">
+    <input [disabled]="!comment.is_owned" [value]="comment.message" class="inputbox w-full outline-none border-[.1em] border-transparent focus:border-lime-500 focus:p-2 rounded-sm" #umessage>
+    @if (comment.is_owned && message != comment.message) {
+      <div class="btn-opt gap-2 py-1">
+        <button class="bg-lime-500 px-2 py-1 border-[.1em] border-lime-500 text-white rounded-sm cursor-pointer hover:bg-lime-600 hover:border-lime-600"  type="button" (click)="updateComment(umessage.value)">Edit</button>
+        <button class="bg-transparent px-2 py-1 border-[.1em] border-lime-500 text-lime-500 rounded-sm cursor-pointer hover:bg-lime-200 hover:border-lime-600" type="button" (click)="deleteComment()">Delete</button>
+      </div>
+    }
+  </p>
+</div> 

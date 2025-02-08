@@ -1,0 +1,7 @@
+.btn-opt {
+  display: flex;
+}
+
+.inputbox:focus + .btn-opt {
+  display: flex;
+}

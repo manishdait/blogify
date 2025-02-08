@@ -1,0 +1,39 @@
+<div class="wrapper">
+  <div>
+    <h1 class="text-5xl font-semibold text-lime-500">BlogApp</h1>
+  </div>
+
+  @if (!verified) {
+    <div class="mt-4 w-full">
+      <form class="form" [formGroup]="form" (ngSubmit)="onSubmit()">
+        <div class="flex flex-col gap-1 w-full my-2">
+          <label class="text-sm" for="code">Activation Code</label>
+          <input class="border-[.1em] border-gray-300 focus:border-lime-500 p-2 rounded-sm outline-none" type="text" id="code" placeholder="A3JsW9" formControlName="code">
+          @if (formError && (formControls['code'].errors && formControls['code'].errors['required'])) {
+            <span class="text-sm text-red-500">*Activation code is required</span>
+          }
+    
+          @if (formError && ((formControls['code'].errors && formControls['code'].errors['minlength'])) || formControls['code'].errors && formControls['code'].errors['maxlength']) {
+            <span class="text-sm text-red-500">*Activation code must be 6 character long.</span>
+          }
+        </div>
+    
+        <br>
+       
+        <div class="flex flex-col gap-2">
+          <button class="bg-lime-500 cursor-pointer border-[.1em] border-limegreen-500 text-white text-base font-semibold p-2 rounded-sm hover:bg-lime-600 hover:border-lime-600" type="submit">Verify</button>
+          <button class="bg-transparent cursor-pointer border-[.1em] border-limegreen-500 text-lime-500 text-base font-semibold p-2 rounded-sm hover:bg-gray-100" type="button" (click)="resend()">Resend Code</button>
+        </div>
+      </form>
+    </div>  
+  }
+
+  @if (verified) {
+    <div class="w-full gap-2 flex flex-col justify-center items-center p-8 rounded-lg mt-4 bg-lime-50">
+      <h1 class="text-3xl text-gray-900 font-bold">Email Verifed</h1>
+      <span class="text-base">Your email address successfully verified</span>
+      <fa-icon [icon]="['fab', 'circlecheck']"></fa-icon>
+      <button class="border-[.1em] text-base p-2 rounded-sm cursor-pointer hover:bg-lime-100" type="button" (click)="continue()">Continue</button>
+    </div>
+  }
+</div>

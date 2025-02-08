@@ -1,0 +1,40 @@
+<div class="wrapper">
+  <div>
+    <h1 class="text-5xl font-semibold text-lime-500">BlogApp</h1>
+  </div>
+
+  <div class="mt-4 w-full">
+    <form [formGroup]="form" (ngSubmit)="onSubmit()">
+      <div class="flex flex-col gap-1 w-full my-2">
+        <label for="email" class="text-sm">Email</label>
+        <input class="border-[.1em] border-gray-300 p-2 focus:border-lime-500 rounded-sm outline-none" type="email" id="email" placeholder="petergriffin@familyguy.io" formControlName="email">
+        @if (formError && (formControls['email'].errors && formControls['email'].errors['required'])) {
+          <span class="text-sm text-red-500">*Email is required</span>
+        }
+
+        @if (formError && (formControls['email'].errors && formControls['email'].errors['email'])) {
+          <span class="text-sm text-red-500">*Enter a valid email</span>
+        }
+      </div>
+
+      <div class="flex flex-col gap-1 w-full my-2">
+        <label class="text-sm" for="password">Password</label>
+        <input class="border-[.1em] border-gray-300 p-2 focus:border-lime-500 rounded-sm outline-none" type="password" id="password" placeholder="Peter$e3ret" formControlName="password">
+        @if (formError && (formControls['password'].errors && formControls['password'].errors['required'])) {
+          <span class="text-sm text-red-500">*Password is required</span>
+        }
+
+        @if (formError && (formControls['password'].errors && formControls['password'].errors['minlength'])) {
+          <span class="text-sm text-red-500">*Password must contain at least 8 characters.</span>
+        }
+      </div>
+
+      <br>
+   
+      <div class="flex flex-col gap-2">
+        <button class="bg-lime-500 cursor-pointer border-[.1em] border-limegreen-500 text-white text-base font-semibold p-2 rounded-sm hover:bg-lime-600 hover:border-lime-600" type="submit">Login</button>
+        <button class="bg-transparent cursor-pointer border-[.1em] border-limegreen-500 text-lime-500 text-base font-semibold p-2 rounded-sm hover:bg-gray-100" type="button" (click)="createAccount()">Create Account</button>
+      </div>
+    </form>
+  </div>
+</div>

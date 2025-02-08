@@ -2,9 +2,9 @@ import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 import { provideNgxWebstorage, withLocalStorage } from 'ngx-webstorage';
 import { routes } from './app.routes';
-import { HTTP_INTERCEPTORS, provideHttpClient, withFetch, withInterceptors, withInterceptorsFromDi } from '@angular/common/http';
-import { AuthInterceptor } from './interceptor/auth.interceptor';
-import { ErrorInterceptor } from './interceptor/error.interceptor';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
+import { AccessTokenInterceptor } from './interceptor/access-token.interceptor';
+import { refreshTokenInterceptor } from './interceptor/refresh-token.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -13,8 +13,8 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes),
     provideHttpClient(withInterceptorsFromDi()),
     [
-      {provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true},
-      {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
+      {provide: HTTP_INTERCEPTORS, useClass: refreshTokenInterceptor, multi: true},
+      {provide: HTTP_INTERCEPTORS, useClass: AccessTokenInterceptor, multi: true}
     ]
   ]
 };

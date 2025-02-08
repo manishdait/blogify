@@ -1,0 +1,10 @@
+.wrapper {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu {
+  width: min(100%, 200px);
+}

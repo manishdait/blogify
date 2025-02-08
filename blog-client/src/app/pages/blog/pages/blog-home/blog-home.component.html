@@ -1,0 +1,5 @@
+<div class="wrapper">
+  @for (blog of blogs; track blog.id) {
+    <app-blog-card [blog]="blog" class="min-w-full"></app-blog-card>
+  }
+</div>

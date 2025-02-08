@@ -1,0 +1,92 @@
+@if (updateImage) {
+  <div class="w-screen h-screen fixed translusent-bg z-30 flex items-center justify-center p-2">
+    <div class="form-container flex flex-col gap-4">
+      <h1 class="text-2xl">Update Profile Picture</h1>
+
+      <div class="relative w-full h-50 overflow-hidden rounded-sm border-[.1em] border-gray-200">
+        @if (newImg === '') {
+          <label class="flex items-center justify-center w-full h-full cursor-pointer bg-gray-100 text-center text-base font-bold" for="file">
+            <span>Click to insert image</span>
+          </label>
+        }
+        @if (newImg) {
+          <div class="absolute flex items-center justify-center cursor-pointer right-2 w-6 h-6 rounded-[100%] top-2 bg-white hover:bg-gray-200 border-[.1em] border-gray-200" (click)="unload()">
+            <fa-icon [icon]="'close'"></fa-icon>
+          </div>
+          <img class="w-full h-full object-contain" [src]="newImg">
+        }
+        <input id="file" type="file" class="hidden" (change)="upload($event)">
+      </div>
+
+      <div class="flex gap-4">
+        <button class="bg-lime-500 cursor-pointer border-[.1em] border-lime-500 text-white text-base font-semibold p-2 px-4 rounded-sm hover:bg-lime-600 hover:border-lime-600" type="button" (click)="updateAvtar()">Save</button>
+        <button class="bg-transparent cursor-pointer border-[.1em] border-lime-500 text-lime-500 text-base font-semibold py-2 px-4 rounded-sm hover:bg-gray-100" type="button" (click)="toggleUpdateImage()">Cancel</button>
+      </div>
+    </div>
+  </div>
+}
+
+@if (updateInfo) {
+  <div class="w-screen h-screen fixed translusent-bg z-30 flex items-center justify-center p-2">
+    <div class="form-container flex flex-col gap-4">
+      <h1 class="text-2xl">Update Personal Details</h1>
+
+      <div class="flex flex-col gap-1 w-full">
+        <label class="text-sm" for="firstname">Firstname</label>
+        <input class="border-[.1em] border-gray-200 p-2 rounded-sm" type="text" id="firstname" placeholder="Jhon" formControlName="firstName" [value]="info.first_name" #firstname>
+      </div>
+
+      <div class="flex flex-col gap-1 w-full">
+        <label class="text-sm" for="lastname">Lastname</label>
+        <input class="border-[.1em] border-gray-200 p-2 rounded-sm" type="text" id="lastname" placeholder="Jhon" formControlName="lastName" [value]="info.last_name" #lastname>
+      </div>
+
+      <div class="flex gap-4">
+        <button class="bg-lime-500 cursor-pointer border-[.1em] border-lime-500 text-white text-base font-semibold p-2 px-4 rounded-sm hover:bg-lime-600 hover:border-lime-600" type="button" (click)="updateDetails(firstname.value, lastname.value)">Save</button>
+        <button class="bg-transparent cursor-pointer border-[.1em] border-lime-500 text-lime-500 text-base font-semibold py-2 px-4 rounded-sm hover:bg-gray-100" type="button" (click)="toggleUpdateInfo()">Cancel</button>
+      </div>
+    </div>
+  </div>
+}
+
+<div class="wrapper">
+  <h1 class="text-4xl font-semibold">Profile</h1>
+  
+  <br>
+
+  <div class="flex flex-col gap-4">
+    <div class="relative mx-auto flex items-center justify-center w-60 h-60 rounded-[100%] border-[.1em] border-gray-200 overflow-hidden cursor-pointer avtar"> 
+      <img class="h-full w-full object-cover" [src]="info.img_url? info.img_url : 'asset/profile.jpg'">
+
+      <div class="absolute hidden w-full h-full overlay translusent-bg items-center justify-center cursor-pointer" (click)="toggleUpdateImage()">
+        <label class="text-1xl font-medium text-white" for="file">Edit Picture</label>
+      </div>
+    </div>
+
+    <div class="flex flex-col">
+      <div class="flex flex-wrap gap-2 my-2">
+        <div class="flex flex-col gap-1 w-full">
+          <label class="text-sm" for="firstname">Firstname</label>
+          <input class="border-[.1em] border-gray-200 p-2 rounded-sm" type="text" id="firstname" [disabled]="true" placeholder="Jhon" formControlName="firstName" [value]="info.first_name">
+        </div>
+  
+        <div class="flex flex-col gap-1 w-full">
+          <label class="text-sm" for="lastname">Lastname</label>
+          <input class="border-[.1em] border-gray-200 p-2 rounded-sm" type="text" id="text" [disabled]="true" placeholder="Doe" formControlName="lastName" [value]="info.last_name">
+        </div>
+      </div>
+
+      <div class="flex gap-2 my-2">
+        <div class="flex flex-col gap-1 w-full">
+          <label class="text-sm" for="email">Email</label>
+          <input class="border-[.1em] border-gray-200 p-2 rounded-sm" type="email" id="email" placeholder="petergriffin@familyguy.io" [value]="info.email" [disabled]="'true'">
+        </div>
+      </div>
+
+      <div class="flex gap-4 my-2">
+        <button class="bg-lime-500 cursor-pointer border-[.1em] border-lime-500 text-white text-base font-semibold p-2 rounded-sm hover:bg-lime-600 hover:border-lime-600" type="button">Change Password</button>
+        <button class="bg-transparent cursor-pointer border-[.1em] border-lime-500 text-lime-500 text-base font-semibold py-2 px-4 rounded-sm hover:bg-gray-100" type="button" (click)="toggleUpdateInfo()">Edit</button>
+      </div>
+    </div>
+  </div>
+</div>
