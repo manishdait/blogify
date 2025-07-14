@@ -88,11 +88,15 @@ The backend API documentation is available via Swagger UI at:`http://localhost:8
 ## Result
 
 ![Demo Image](assets/asset1.png)
+---
 
 ![Demo Image](assets/asset2.png)
+---
 
 ![Demo Image](assets/asset3.png)
+---
 
 ![Demo Image](assets/asset4.png)
+---
 
 ![Demo Image](assets/asset5.png)
