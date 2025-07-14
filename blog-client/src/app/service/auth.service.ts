@@ -5,7 +5,6 @@ import { LocalStorageService } from 'ngx-webstorage';
 import { AuthResponse, AuthRequest } from '../models/auth';
 import { RegistrationRequest } from '../models/registration';
 import { environment } from '../../environments/environment';
-import { jwtDecode } from 'jwt-decode';
 
 const URL = `${environment.API_DOMAIN}/auth`;
 
@@ -38,11 +37,11 @@ export class AuthService {
   }
 
   verifyAccount(username: string, activationCode: string): Observable<Map<string, boolean>> {
-    return this.client.post<Map<string, boolean>>(`${URL}/verify/${username}/${activationCode}`, null);
+    return this.client.post<Map<string, boolean>>(`${URL}/verify/${username}?token=${activationCode}`, null);
   }
 
   resendVerificationToken(username: string): Observable<Map<string, boolean>> {
-    return this.client.post<Map<string, boolean>>(`${URL}/resend-token/${username}`, null);
+    return this.client.post<Map<string, boolean>>(`${URL}/resend-token?username=${username}`, null);
   }
 
   refreshToken(): Observable<AuthResponse> {

@@ -6,10 +6,17 @@ import { CommentService } from '../../../../service/comment.service';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome'
 import { CommentRequest, CommentResponse } from '../../../../models/comment';
 import { CommentCardComponet } from '../../../../components/comment-card/comment-card.component';
+import { getDate } from '../../../../utils/utils';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../../store/app.state';
+import { Observable } from 'rxjs';
+import { comments } from '../../../../store/comment/comment.selector';
+import { addComment, setComments } from '../../../../store/comment/comment.actions';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-blog-detail',
-  imports: [CommentCardComponet, FontAwesomeModule],
+  imports: [CommonModule, CommentCardComponet, FontAwesomeModule],
   templateUrl: './blog-detail.component.html',
   styleUrl: './blog-detail.component.css'
 })
@@ -25,17 +32,18 @@ export class BlogDetailComponent implements OnInit {
     edited_at: new Date(),
     author_img: null
   };
-  comments: CommentResponse[] = [];
+  comments: Observable<CommentResponse[]>;
 
-  constructor(private blogService: BlogService, private activeRoute: ActivatedRoute, private commentService: CommentService) {
+  constructor(private blogService: BlogService, private activeRoute: ActivatedRoute, private store: Store<AppState>, private commentService: CommentService) {
     this.blogId = activeRoute.snapshot.params['blogId'];
+    this.comments = store.select(comments);
 
     blogService.fetchBlog(this.blogId).subscribe(
       (res) => {
         this.blog = res;
         this.commentService.fetchCommentsForBlog(this.blogId).subscribe(
-          (comments)=> {
-            this.comments = comments.content;
+          (cres)=> {
+            store.dispatch(setComments({comments: cres.content}));
           }
         );
       }
@@ -54,10 +62,14 @@ export class BlogDetailComponent implements OnInit {
 
     this.commentService.createComment(request).subscribe(
       (res) => {
-        this.comments.push(res);
+        this.store.dispatch(addComment({comment: res}))
       }, (err) => {
         console.log(err);
       }
     )  
+  }
+
+  getDate(timestamp: any) {
+    return getDate(timestamp);
   }
 }

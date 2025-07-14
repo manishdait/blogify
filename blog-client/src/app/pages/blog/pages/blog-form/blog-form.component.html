@@ -1,16 +1,21 @@
 <div class="wrapper">
     <div class="flex flex-col gap-1 w-full my-2">
-      <label class="text-sm" for="title">Title</label>
-      <input class="border-[.1em] border-gray-300 focus:border-lime-500 p-2 rounded-sm outline-none" type="text" id="title" placeholder="Title for your story" #title>
+      <label class="text-[.8rem]" for="title">Title</label>
+      <input class="input-box" type="text" id="title" placeholder="Title for your story" #title>
     </div>
 
-    <div class="flex flex-col gap-1 w-full my-2">
-      <label class="text-sm">Content</label>
-      <mini-editor [focusHighlightColor]="'#d1d5dc'" #editor></mini-editor>
+    <div class="flex flex-col gap-1 w-full mt-5">
+      <ngx-editor-menu [editor]="editor"> </ngx-editor-menu>
+      <ngx-editor
+      [editor]="editor" 
+      [(ngModel)]="html"
+      [disabled]="false"
+      [placeholder]="'Type here...'"
+      />
     </div>
     
     <div class="flex gap-4 mt-4">
-      <button class="bg-lime-500 text-base cursor-pointer border-[.1em] border-lime-500 text-white font-medium p-2 rounded-sm hover:bg-lime-600 hover:border-lime-600" type="button" (click)="publish()">Publish</button>
-      <button class="bg-transparent text-base cursor-pointer border-[.1em] border-lime-500 text-lime-500 font-medium p-2 rounded-sm  hover:bg-gray-100" type="button">Cancle</button>
+      <button class="button" type="button" (click)="publish()">Publish</button>
+      <button class="border-button" type="button" (click)="cancle()">Cancle</button>
     </div>
 </div>

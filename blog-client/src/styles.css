@@ -1,6 +1,48 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
 
+@layer components {
+  .input-group {
+    @apply flex flex-col gap-0.5 w-full
+  }
+  .input-group label {
+    @apply text-[.8rem]
+  }
+  .input-group span {
+    @apply text-[.8rem] text-red-700
+  }
+  .input-box {
+    @apply border-[.1em] border-gray-300 focus:border-neutral-900  px-2 py-1 rounded-sm outline-none placeholder:text-neutral-500
+  }
+
+  .button {
+    @apply text-[1rem] bg-neutral-900 cursor-pointer border-[.1em] border-neutral-900
+    text-white text-base font-semibold px-2 py-1 rounded-sm hover:bg-neutral-600 hover:border-neutral-600
+  }
+  .border-button {
+    @apply text-[1rem] bg-transparent cursor-pointer border-[.1em] border-neutral-900 
+    text-neutral-900 text-base font-semibold px-2 py-1 rounded-sm hover:bg-gray-100
+  }
+}
+
 html {
-  font-size: 16px;
+  font-size: 1rem;
+}
+
+@media screen and (max-width: 600px) {
+  html {
+    font-size: .9rem;
+  }
+}
+
+@media screen and (max-width: 400px) {
+  html {
+    font-size: .8rem;
+  }
+}
+
+@media screen and (max-width: 200px) {
+  html {
+    font-size: .7rem;
+  }
 }

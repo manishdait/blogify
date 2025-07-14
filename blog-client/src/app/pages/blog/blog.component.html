@@ -1,16 +1,14 @@
 <div class="wrapper">
-  <div class="flex justify-between items-center p-4 border-[.1em] border-gray-200">
-    <span class="text-2xl text-lime-500 font-semibold">BlogApp</span>
+  <div class="flex justify-between items-center p-4 py-2 shadow-sm">
+    <span class="text-[1.5rem] text-neutral-900 font-semibold">Blogify</span>
 
     @if (!authenticated) {
       <div class="flex items-center gap-2">
-        <a class="px-4 py-1 rounded-[5em] hover:bg-gray-200" routerLink="/blog/create">Write</a>
-        <a class="bg-lime-500 px-4 py-1 rounded-[5em] hover:bg-lime-600" routerLink="/register">Login</a>
+        <a class="px-4 py-1 text-neutral-900 rounded-[5em] hover:bg-neutral-200 font-medium" routerLink="/blog/create">Write</a>
+        <a class="bg-neutral-900 px-4 py-1 text-white rounded-[5em] hover:bg-neutral-600 font-medium" routerLink="/register">Login</a>
       </div>
-    }
-
-    @if (authenticated) {
-      <div>
+    } @else {
+      <div class="relative">
         <div class="w-8 h-8 rounded-[100%] overflow-hidden border-[.1em] border-gray-200 cursor-pointer" (click)="toggleMenu()">
           @if (info) {
             <img class="w-full h-full object-cover" [src]="info.img_url?info.img_url:'asset/profile.jpg'">
@@ -18,10 +16,27 @@
         </div>
   
         @if (menu) {
-          <div class="fixed flex flex-col bg-white border-[.1em] border-gray-200 p-4 right-4 menu gap-2 rounded-sm">
-            <button class="bg-lime-500 cursor-pointer border-[.1em] border-lime-500 text-white text-base font-semibold p-1 rounded-sm hover:bg-lime-600 hover:border-lime-600" type="button" routerLink="/blog/create" (click)="toggleMenu()">Write</button>
-            <button class="bg-lime-500 cursor-pointer border-[.1em] border-lime-500 text-white text-base font-semibold p-1 rounded-sm hover:bg-lime-600 hover:border-lime-600" type="button" (click)="profile()">Profile</button>
-            <button class="bg-red-500 cursor-pointer border-[.1em] border-red-500 text-white text-base font-semibold p-1 rounded-sm hover:bg-red-600 hover:border-red-600" type="button" (click)="logout()">Logout</button>
+          <div class="w-[120px] absolute flex flex-col bg-white border-[.1em] border-neutral-200 shadow-sm p-2 right-4 gap-2 rounded-sm">
+            <ul class="flex flex-col gap-1">
+              <li class="w-full">
+                <button class="w-full text-[1rem] flex items-center gap-2 font-medium text-neutral-900 px-2 py-1 rounded-md hover:bg-neutral-100 cursor-pointer" type="button" routerLink="/blog/create" (click)="toggleMenu()">
+                  <fa-icon class="text-[.7rem] text-neutral-400" [icon]="'pen'"/>
+                  <span>Write</span>
+                </button>
+              </li>
+              <li class="w-full">
+                <button class="w-full text-[1rem] flex items-center gap-2 font-medium text-neutral-900 px-2 py-1 rounded-md hover:bg-neutral-100 cursor-pointer" type="button" (click)="profile()">
+                  <fa-icon class="text-[.7rem] text-neutral-400" [icon]="'user'"/>
+                  <span>Profile</span>
+                </button>
+              </li>
+              <li class="w-full">
+                <button class="w-full text-[1rem] flex items-center gap-2 cursor-pointer text-red-600 text-base font-medium p-1 rounded-sm hover:bg-red-600/5" type="button" (click)="logout()">
+                  <fa-icon class="text-[.7rem]"  [icon]="'right-from-bracket'"/>
+                  <span>Logout</span>
+                </button>
+              </li>
+            </ul>
           </div>
         }
       </div>

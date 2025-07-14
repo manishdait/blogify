@@ -20,7 +20,7 @@ export class VerificationComponent implements OnInit {
   form: FormGroup;
   
   constructor(private authService: AuthService, private alertService: AlertService, private activeRoute: ActivatedRoute, private router: Router, private faLibrary: FaIconLibrary) {
-    this.username = activeRoute.snapshot.params['username'];
+    this.username = activeRoute.snapshot.queryParams['user'];
     this.form = new FormGroup({
       code: new FormControl('', [Validators.required, Validators.minLength(6), Validators.maxLength(6)])
     });

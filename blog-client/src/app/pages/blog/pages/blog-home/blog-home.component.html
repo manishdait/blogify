@@ -1,5 +1,11 @@
 <div class="wrapper">
-  @for (blog of blogs; track blog.id) {
-    <app-blog-card [blog]="blog" class="min-w-full"></app-blog-card>
+  @if ((blogs$ | async)?.length == 0) {
+   <div class="p-2 border-[.1em] border-neutral-300 rounded-s-md">
+    <span class="block text-center text-[1.5rem] font-bold">No Blogs Available</span>
+   </div> 
+  }@else {
+    @for (blog of (blogs$ | async); track blog.id) {
+      <app-blog-card [blog]="blog" class="min-w-full"></app-blog-card>
+    }
   }
 </div>

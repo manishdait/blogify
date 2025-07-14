@@ -24,7 +24,7 @@ export const routes: Routes = [
     component: LoginComponent
   },
   {
-    path: ':username/verify',
+    path: 'verify',
     component: VerificationComponent
   },
   {
