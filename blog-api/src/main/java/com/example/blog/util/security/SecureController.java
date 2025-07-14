@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -22,7 +21,7 @@ public class SecureController {
   @Operation(summary = "Validate user accessToken")
   @SecurityRequirement(name = "accessToken")
   @GetMapping()
-  public ResponseEntity<Map<String, Boolean>> validateAccess(HttpServletRequest request) {
+  public ResponseEntity<Map<String, Boolean>> validateAccess() {
     return ResponseEntity.status(HttpStatus.OK).body(Map.of("success", true));
   }
 }

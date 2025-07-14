@@ -1,8 +1,6 @@
 package com.example.blog.user.dto;
 
-import com.example.blog.util.image.Image;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 
 public record UserResponse(
@@ -18,11 +16,9 @@ public record UserResponse(
   @Schema(name = "email", description = "User email")
   String email,
 
-  @JsonProperty("img_url")
-  @Schema(name = "img_url", description = "User image url")
-  String imgUrl
+  @JsonProperty("profile")
+  @Schema(name = "profile", description = "User image url")
+  String profile
 ) {
-  public UserResponse(String firstName, String lastName, String email, Image image) {
-    this(firstName, lastName, email, image == null? null : "http://localhost:8080/blog-api/v1/image/" + image.getFilename());
-  }
+
 }

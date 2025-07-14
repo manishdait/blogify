@@ -1,4 +1,4 @@
-package com.example.blog.user.domain.token;
+package com.example.blog.token;
 
 import java.time.Instant;
 
@@ -7,6 +7,8 @@ import com.example.blog.user.User;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,10 +40,14 @@ public class Token extends AbstractAuditingEntity {
   private String token;
 
   @Column(name = "expiration")
-  private Instant expiration;
+  private Instant expiration;  
 
-  @Column(name = "verified")
-  private boolean verified;
+  @Enumerated(value = EnumType.STRING)
+  @Column(name = "type")
+  private TokenType type;
+
+  @Column(name = "used")
+  private boolean used;
   
   @ManyToOne
   @JoinColumn(name = "user_id")

@@ -25,7 +25,7 @@ public class BlogService {
   public BlogResponse createBlog(BlogRequest request, Authentication authentication){
     User user = (User) authentication.getPrincipal();
     if (!user.isVerified()) {
-      throw new IllegalStateException("User account is not verified");
+      throw new IllegalStateException("User email is not verified");
     }
 
     Blog blog = blogMapper.blogRequestToBlog(request);

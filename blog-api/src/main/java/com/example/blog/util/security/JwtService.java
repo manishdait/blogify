@@ -2,7 +2,7 @@ package com.example.blog.util.security;
 
 import java.time.Instant;
 import java.util.Date;
-import java.util.Map;
+import java.util.HashMap;
 
 import javax.crypto.SecretKey;
 
@@ -16,19 +16,15 @@ import io.jsonwebtoken.security.Keys;
 
 @Service
 public class JwtService {
-  @Value("${security.jwt.secret-key}")
+  @Value("${spring.security.secret-key}")
   private String key;
 
-  @Value("${security.jwt.expiration}")
+  @Value("${spring.security.expiration}")
   private Integer expiration;
 
-  public String generateToken(String username, Map<String, Object> claims) {
-    return generateToken(username, claims, this.expiration);
-  }
-
-  public String generateToken(String username, Map<String, Object> claims, Integer expiration) {
+  public String generateToken(String username, Integer expiration) {
     return Jwts.builder()
-      .claims(claims)
+      .claims(new HashMap<>())
       .subject(username)
       .issuedAt(Date.from(Instant.now()))
       .expiration(Date.from(Instant.now().plusSeconds(expiration)))
@@ -36,25 +32,8 @@ public class JwtService {
       .compact();
   }
 
-  public String username(String token) {
-    return extractAllClaims(token).getSubject();
-  }
-
-  public String fullname(String token) {
-    return extractAllClaims(token).get("full_name").toString();
-  }
-
-  public boolean tokenExpired(String token) {
-    return extractAllClaims(token).getExpiration().before(new Date());
-  }
-
-  public boolean validToken(UserDetails userDetails, String token) {
-    return userDetails.getUsername().equals(username(token))
-      && !tokenExpired(token);
-  }
-
-  private SecretKey getKey() {
-    return Keys.hmacShaKeyFor(key.getBytes());
+  public String generateToken(String username) {
+    return generateToken(username, this.expiration);
   }
 
   public Claims extractAllClaims(String token) {
@@ -63,5 +42,22 @@ public class JwtService {
       .build()
       .parseSignedClaims(token)
       .getPayload();
+  }
+
+  public String getUsername(String token) {
+    return extractAllClaims(token).getSubject();
+  }
+
+  public boolean tokenExpired(String token) {
+    return extractAllClaims(token).getExpiration().before(new Date());
+  }
+
+  public boolean validToken(UserDetails userDetails, String token) {
+    return userDetails.getUsername().equals(getUsername(token))
+      && !tokenExpired(token);
+  }
+
+  private SecretKey getKey() {
+    return Keys.hmacShaKeyFor(this.key.getBytes());
   }
 }

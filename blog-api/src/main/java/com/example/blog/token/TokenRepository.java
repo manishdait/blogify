@@ -1,4 +1,4 @@
-package com.example.blog.user.domain.token;
+package com.example.blog.token;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,5 +9,5 @@ import com.example.blog.user.User;
 
 public interface TokenRepository extends JpaRepository<Token, Integer> {
   Optional<Token> findByToken(String token);
-  List<Token> findByUser(User user);
+  List<Token> findByUserAndType(User user, TokenType type);
 }

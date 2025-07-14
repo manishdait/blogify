@@ -1,17 +1,32 @@
 {"properties": [
   {
-    "name": "security.jwt.secret-key",
+    "name": "spring.security.secret-key",
     "type": "java.lang.String",
     "description": "Secret key for json web token"
   },
   {
-    "name": "security.jwt.expiration",
+    "name": "spring.security.expiration",
     "type": "java.lang.Integer",
     "description": "Expiration time for json web token in seconds"
   },
   {
-    "name": "app.asset-path",
+    "name": "minio.access-key",
     "type": "java.lang.String",
-    "description": "A description for 'app.asset-path'"
+    "description": "A description for 'minio.access-key'"
+  },
+  {
+    "name": "minio.secret-key",
+    "type": "java.lang.String",
+    "description": "A description for 'minio.secret-key'"
+  },
+  {
+    "name": "minio.end-point",
+    "type": "java.lang.String",
+    "description": "A description for 'minio.end-point'"
+  },
+  {
+    "name": "minio.bucket",
+    "type": "java.lang.String",
+    "description": "A description for 'minio.bucket'"
   }
 ]}

@@ -1,25 +1,23 @@
 spring:
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/blog_db
-    username: postgres
-    password: password
-  jpa:
-    hibernate:
-      ddl-auto: create-drop
-    database: postgresql
+    url: ${DATABSE_URL:jdbc:postgresql://localhost:5432/blogify}
+    username: ${DATABSE_USERNAME:postgres}
+    password: ${DATABSE_PASSWORD:password}
+  flyway:
+    user: ${DATABSE_USERNAME:postgres}
+    password: ${DATABSE_PASSWORD:password}
   mail:
-    host: localhost
-    port: 1025
-    username: springboot@blogapi.com
+    host: ${SMTP_HOST:localhost}
+    port: ${SMTP_PORT:1025}
+    username: ${SMTP_USERNAME:mialdev@spring.in}
     protocol: smtp
-
-springdoc:
-  swagger-ui:
-    path: /docs
-    
-security:
-  jwt:
-    secret-key: 815F1298534CA2989B84C1C2F48D4609E7A05811E0700653661466A6
+  security:
+    secret-key: ${SECRET_KEY}
     expiration: 60000
-
+  
+minio:
+  access-key: minioadmin
+  secret-key: minioadmin
+  end-point: http://localhost:9000
+  bucket: blogify

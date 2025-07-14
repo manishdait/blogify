@@ -16,15 +16,15 @@ import lombok.RequiredArgsConstructor;
 public class MailContextBuilder {
   private final TemplateEngine templateEngine;
 
-  public Mail buildEmailVerificationMail(User user, String code) {
+  public Mail buildEmailVerificationMail(User user, String token) {
     Map<String, Object> content = new HashMap<>();  
     content.put("username", user.getFullname());
-    content.put("verification_code", code);
-    content.put("verification_url", "http://localhost:4200/" + user.getEmail() + "/verify");
+    content.put("verification_code", token);
+    content.put("verification_url", "http://localhost:4200/verify?user=" + user.getEmail());
 
     String body = composeBody(MailTemplate.VERIFICATION_TEMPLATE, content);
   
-    return new Mail(user.getEmail(), "Verify your account", body);
+    return new Mail(user.getEmail(), "OTP Verification", body);
   }
 
   private String composeBody(MailTemplate template, Map<String, Object> content) {

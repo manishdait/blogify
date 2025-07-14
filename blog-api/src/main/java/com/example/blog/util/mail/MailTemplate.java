@@ -3,7 +3,7 @@ package com.example.blog.util.mail;
 import lombok.Getter;
 
 public enum MailTemplate {
-  VERIFICATION_TEMPLATE("email_verification");
+  VERIFICATION_TEMPLATE("otp_verification");
 
   @Getter
   private final String template;

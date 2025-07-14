@@ -1,8 +1,11 @@
 package com.example.blog.config;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -19,10 +22,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import static org.springframework.security.config.Customizer.withDefaults;
-
-import java.util.List;
-
 import com.example.blog.user.UserService;
 import com.example.blog.util.security.JwtFilter;
 
@@ -38,42 +37,37 @@ public class SecurityConfig {
   @Bean
   SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
     http.csrf(csrf -> csrf.disable());
-    http.cors(withDefaults());
-
-    http.sessionManagement(
-      session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-    );
+    http.cors(cors -> cors.configurationSource(corsConfigurationSource()));
+    http.authorizeHttpRequests(request -> {
+      request.requestMatchers(
+        "/error",
+        "/favicon.ico",
+        "/v2/api-docs", 
+        "/v3/api-docs", 
+        "/v3/api-docs.yaml", 
+        "/v3/api-docs/**", 
+        "/swagger-resources", 
+        "/swagger-resources/**",
+        "/configuration/ui",
+        "/configuration/security",
+        "/webjars/**",
+        "/swagger-ui/**", 
+        "/swagger-ui.html", 
+        "/docs",
+        "/blog-api/v1/auth/**"
+      ).permitAll();
+      request.requestMatchers(HttpMethod.GET, "/blog-api/v1/blog/**").permitAll();
+      request.anyRequest().authenticated();
+    });
     http.authenticationProvider(authenticationProvider());
-
-    http.authorizeHttpRequests(
-      request -> {
-        request.requestMatchers("/error", "/favicon.ico").permitAll();
-        request.requestMatchers(
-          "/v2/api-docs", 
-          "/v3/api-docs", 
-          "/v3/api-docs.yaml", 
-          "/v3/api-docs/**", 
-          "/swagger-resources", 
-          "/swagger-resources/**",
-          "/configuration/ui",
-          "/configuration/security",
-          "/webjars/**",
-          "/swagger-ui/**", 
-          "/swagger-ui.html", 
-          "/docs"
-        ).permitAll();
-        request.requestMatchers("/blog-api/v1/auth/**").permitAll();
-        request.requestMatchers(HttpMethod.GET, "/blog-api/v1/blog/**", "/blog-api/v1/image/**").permitAll();
-        request.anyRequest().authenticated();
-      }
-    ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+    http.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
+    http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
     return http.build();
   }
 
   @Bean
   AuthenticationProvider authenticationProvider() {
-    DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-    authenticationProvider.setUserDetailsService(userService);
+    DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider(userService);
     authenticationProvider.setPasswordEncoder(passwordEncoder());
     return authenticationProvider;
   }
@@ -93,7 +87,7 @@ public class SecurityConfig {
     CorsConfiguration configuration = new CorsConfiguration();
     configuration.setAllowedOrigins(List.of("http://localhost:4200"));
     configuration.setAllowedMethods(List.of("GET", "POST", "PATCH", "OPTIONS", "PUT", "DELETE"));
-    configuration.setAllowedHeaders(List.of("Authorization", "Content-Type"));
+    configuration.setAllowedHeaders(List.of(HttpHeaders.CONTENT_TYPE, HttpHeaders.AUTHORIZATION, HttpHeaders.ORIGIN, HttpHeaders.ACCEPT));
 
     UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);

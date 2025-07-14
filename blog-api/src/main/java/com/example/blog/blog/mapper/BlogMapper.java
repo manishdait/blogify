@@ -2,7 +2,6 @@ package com.example.blog.blog.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 
@@ -11,13 +10,13 @@ import com.example.blog.blog.dto.BlogRequest;
 import com.example.blog.blog.dto.BlogResponse;
 import com.example.blog.shared.PagedResponse;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(componentModel = "spring")
 public interface BlogMapper {
   BlogMapper INSTANT = Mappers.getMapper(BlogMapper.class);
 
   @Mapping(source = "author.fullname", target = "author")
   @Mapping(target = "comments", expression = "java(blog.getComments().size())")
-  @Mapping(target = "authorImg", expression = "java(blog.getAuthor().getImage() == null? null : \"http://localhost:8080/blog-api/v1/image/\" + blog.getAuthor().getImage().getFilename())")
+  @Mapping(target = "authorImg", expression = "java(blog.getAuthor().getProfile())")
   BlogResponse blogToBlogResponse(Blog blog);
 
   @Mapping(target = "id", expression = "java(null)")

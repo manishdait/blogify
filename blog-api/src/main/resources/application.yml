@@ -2,11 +2,23 @@ spring:
   application:
     name: blog-api
   profiles:
-    active:
-    - dev
+    active: dev
+  config:
+    import: optional:file:.env[.properties]
+  jpa:
+    database: postgresql
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+    baseline-description: "init"
+    baseline-version: 0
+  
+springdoc:
+  swagger-ui:
+    path: /docs
   
 server:
   port: 8080
-
-app:
-  asset-path: "src/main/resources/static/asset"
+  

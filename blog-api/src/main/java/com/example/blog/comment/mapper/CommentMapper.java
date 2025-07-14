@@ -2,7 +2,6 @@ package com.example.blog.comment.mapper;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
-import org.mapstruct.MappingConstants;
 import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 
@@ -11,7 +10,7 @@ import com.example.blog.comment.dto.CommentResponse;
 import com.example.blog.shared.PagedResponse;
 import com.example.blog.user.User;
 
-@Mapper(componentModel = MappingConstants.ComponentModel.SPRING)
+@Mapper(componentModel = "spring")
 public interface CommentMapper {
   CommentMapper INSTANT = Mappers.getMapper(CommentMapper.class);
 
@@ -20,7 +19,7 @@ public interface CommentMapper {
   @Mapping(source = "comment.createdAt", target = "createdAt")
   @Mapping(source = "comment.editedAt", target = "editedAt")
   @Mapping(target = "isOwned", expression = "java(comment.getAuthor().getId() == user.getId())")
-  @Mapping(target = "authorImg", expression = "java(comment.getAuthor().getImage() == null? null : \"http://localhost:8080/blog-api/v1/image/\" + comment.getAuthor().getImage().getFilename())")
+  @Mapping(target = "authorImg", expression = "java(comment.getAuthor().getProfile())")
   CommentResponse commentToCommentResponse(Comment comment, User user);
 
   @Mapping(target = "prev", expression = "java(page.hasPrevious())")
