@@ -84,3 +84,15 @@ SECRET_KEY=ea46e63ce5fb39b2ae3c171d80c959901750f3f21f30e2a92d1fed6ad647efb9
 
 ## API Endpoints (Overview)
 The backend API documentation is available via Swagger UI at:`http://localhost:8080/docs`
+
+## Result
+
+![Demo Image](assets/asset1.png)
+
+![Demo Image](assets/asset2.png)
+
+![Demo Image](assets/asset3.png)
+
+![Demo Image](assets/asset4.png)
+
+![Demo Image](assets/asset5.png)
